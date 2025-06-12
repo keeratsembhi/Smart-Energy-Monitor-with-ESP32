@@ -30,9 +30,19 @@ void loop() {
 
     delay(1); // space samples slightly
   }
-  // calculate RMS (root square mean) and power
-  float voltageRMS = sqrt(voltageSum / samples); 
+
+  float voltageRMS = sqrt(voltageSum / samples); // calculate raw RMS
   float currentRMS = sqrt(currentSum / samples);
+
+  // Calibration factors — tweak these to match multimeter values
+  const float voltageCalibration = 158.5;  // try values between 150–170 for ZMPT101B
+  const float currentCalibration = 0.394;  // try values between 0.35–0.42 for ACS712 5A
+
+  // Apply calibration
+  voltageRMS *= voltageCalibration;
+  currentRMS *= currentCalibration;
+
+  // Calculate real power
   float power = voltageRMS * currentRMS;
 
   // serial output
@@ -46,3 +56,4 @@ void loop() {
 
   delay(1000);
 }
+
